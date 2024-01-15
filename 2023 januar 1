@@ -1,0 +1,75 @@
+.386
+.model flat, c
+.stack 4096
+.data
+
+X dd 0FFFF0000h
+N dw 6
+p db 15
+
+.code
+main proc
+
+xor edx, edx; zbir u edx
+
+xor edi, edi
+mov edi, 4
+
+xor ebx, ebx
+
+zbir:
+
+mov ebx, edi
+
+xor ecx, ecx
+mov cl, 16
+sub cl, p ; koliko visih bitova da anulira
+
+xor eax, eax
+mov ax, 07FFFh
+
+anul:
+
+and bx, ax
+shr ax, 1
+
+loop anul
+
+shl ebx, 1
+
+mov eax, X
+sub eax, ebx ; u eax gornji deo
+
+xor ecx, ecx
+mov cl, p ; koliko da komplementira
+
+xor esi, esi
+mov esi, edi
+
+mov bx, 08000h
+
+komp:
+
+xor esi, ebx
+shr bx, 1
+
+loop komp
+
+shl esi, 1
+
+push edx
+xor edx, edx
+div esi
+pop edx
+add edx, eax
+
+inc edi
+mov ax, N
+movzx eax, ax
+cmp edi, eax
+JLE zbir
+
+ret
+main endp
+end main
+
